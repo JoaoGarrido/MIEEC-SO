@@ -8,7 +8,7 @@ int main(int argc, char **argv){
         printf("How to use example: ./a.out 10\n ");
         return -1;
     }
-    unsigned char *p1 = 0; //NOTE: needs to be unsigned or 
+    unsigned char *p1 = 0; //NOTE: needs to be unsigned or will get errors because the number is in two's complement in the memory  
     int v1 = 0, v2 = 0;
     int endianInteger = atoi(argv[1]);
     printf("%d\n", endianInteger);
