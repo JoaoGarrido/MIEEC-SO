@@ -1,0 +1,8 @@
+syscall read/write may not read/write every single byte(needs while and checking) 
+
+Exs to do in class:
+1
+4
+5 Note: don't if in 1a)
+
+3 and 4 do later
