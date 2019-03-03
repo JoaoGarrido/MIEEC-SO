@@ -7,6 +7,7 @@
 #define BUFFER_SIZE 64
 
 int main(int argc, char **argv){
+    assert(argc == 2); 
     int fd = open(argv[1], O_RDONLY);
     assert(fd != -1);
     char buf[64];
@@ -16,4 +17,5 @@ int main(int argc, char **argv){
         assert(Read_return != -1);
         Error_return = write(STDOUT_FILENO,buf,Read_return);
     }
+    return 1;
 }
