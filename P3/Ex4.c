@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 int main(int argc, char const *argv[], char *envp[]){
+    assert(argc > 2);
     pid_t pid = fork();
     int status = -1;
     wait(&status);
