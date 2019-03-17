@@ -111,9 +111,15 @@ int execvp(const char *file, char *const argv[]);
 Params:
 > * const char *path
 >> Path to the file that is going to be executed
+>>
 >> in execvp() case it's the file but this file needs to be in PATH
 > * ichar *const argv[]
->> address of the char array that contains the args 
+>> address of the char array that contains the args
+>>
+>> *NOTE:*
+>>
+>>         argv[0] should contain the filename that's going to be executed
+>>         last element of argv array should be NULL
 
 Returns:
 > returns only on error(-1)
