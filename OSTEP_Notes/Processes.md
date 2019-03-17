@@ -59,4 +59,39 @@ Use getpid() to get the PID of the process running at the time!
 
 ## 5.2 The wait() system call
 
+```c
+pid_t wait(int *wstatus);
+```
+Description:
+> waits for any child process to end
+
+Params:
+> * int *wstatus 
+> If no information is needed about how wait returned we can use NULL and it will simply execute wait(NULL) (read man wait for more info)
+
+Returns:
+> returns PID on sucess, -1 on error
+
+```c
+pid_t waitpid(pid_t pid, int *wstatus, int options);
+```
+ Description:
+> waits for some child process to end
+
+Params:
+> * pid_t pid -> Process ID generally but...
+>> < -1   meaning wait for any child process whose process group ID is equal to the absolute value of pid.
+
+>> -1     meaning wait for any child process.
+
+>> 0      meaning wait for any child process whose process group ID is equal to that of the calling process.
+
+>> ``>0    meaning wait for the child whose process ID is equal to the value of pid.
+> * int *wstatus same as wait()
+> * int options some special options (man wait)
+
+Returns:
+> returns child PID on sucess, -1 on error
+
+## 5.3 The exec() system call
 
