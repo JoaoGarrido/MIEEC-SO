@@ -3,12 +3,11 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 
 #include <stdio.h>
 
-#include <sys/types.h>
-#include <sys/wait.h>
 
 void printEnvVar(const char *fileName, char *envp[]){
     const char *text = "ENVP:\n";
