@@ -81,11 +81,11 @@ pid_t waitpid(pid_t pid, int *wstatus, int options);
 Params:
 > * pid_t pid -> Process ID generally but...
 >> < -1   meaning wait for any child process whose process group ID is equal to the absolute value of pid.
-
+>>
 >> -1     meaning wait for any child process.
-
+>>
 >> 0      meaning wait for any child process whose process group ID is equal to that of the calling process.
-
+>>
 >> ``>0    meaning wait for the child whose process ID is equal to the value of pid.
 > * int *wstatus same as wait()
 > * int options some special options (man wait)
@@ -95,3 +95,25 @@ Returns:
 
 ## 5.3 The exec() system call
 
+Runs a program that, unlike fork(), is different from the  the program that calls it.
+
+The exec() overwrites the program that is running (stack, heap and other parts of the space of the program are re-initialized). This means that the process that called exec() is not terminated, it's replaced with a new program.
+
+There are 6 variants of exec(): execl, execlp(), execle(),execv(), execvp(), and execvpe(). 
+
+```c
+int execv(const char *path, char *const argv[]);
+int execvp(const char *file, char *const argv[]);
+```
+ Description:
+> Replaces current process image with a new process image 
+
+Params:
+> * const char *path
+>> Path to the file that is going to be executed
+>> in execvp() case it's the file but this file needs to be in PATH
+> * ichar *const argv[]
+>> address of the char array that contains the args 
+
+Returns:
+> returns only on error(-1)
