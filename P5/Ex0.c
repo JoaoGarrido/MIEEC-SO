@@ -27,7 +27,8 @@ void *incr(void *args){
 #ifdef with_Mutexes
         pthread_mutex_unlock(&lock);
 #endif
-    } 
+    }
+    return 0;
 }
 
 int main(int argc, char *argv[]){
