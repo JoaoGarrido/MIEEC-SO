@@ -6,7 +6,7 @@ void push(stack_structure STACK, int integer, char *text){
     newElement->n = integer;
     newElement->str = text;
     
-    STACK
+    
 }
 
 void pop(stack_structure STACK){
