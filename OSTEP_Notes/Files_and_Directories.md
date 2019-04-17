@@ -2,6 +2,7 @@
 tags:
   - OSTEP
   - File System
+  - Chapter 39
 ---
 
 # Files and Directories
