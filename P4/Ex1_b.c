@@ -13,12 +13,16 @@ typedef struct _input_struct
 }input_struct;
 
 void *sum(void *arg){
-    int res = *(int*)arg+*(int *)(arg+sizeof(int));
+    int *values = (int *) arg;
+    int res = values[0]+values[1];
+    //int res = *(int*)arg+*(int *)(arg+sizeof(int));
     printf("Sum: %d\n", res);
 }
 
 void *sub(void *arg){
-    int res = *(int*)arg-*(int *)(arg+sizeof(int));
+    int *values = (int *) arg;
+    int res = values[0]-values[1];
+    //int res = *(int*)arg-*(int *)(arg+sizeof(int));
     printf("Sub: %d\n", res);
 }
 
@@ -47,18 +51,17 @@ int main(int argc, char *argv[]){
     input_struct input;
     input.a = a;
     input.b = b;
-    pthread_attr_t attr[4];
     pthread_t id[4];
-
-    /*for(int i = 0; i < 4; i++){
+    /*
+    pthread_attr_t attr[4];
+    for(int i = 0; i < 4; i++){
         pthread_attr_init(&(attr[i]));
     }*/
     pthread_create(&(id[0]), NULL, sum, (void *) args);
     pthread_create(&(id[1]), NULL, sub, (void *) args);
     pthread_create(&(id[2]), NULL, mult, (void *) &input);
     pthread_create(&(id[3]), NULL, divi, (void *) &input);
-    pthread_join((id[0]), NULL);
-    pthread_join((id[1]), NULL);
-    pthread_join((id[2]), NULL);
-    pthread_join((id[3]), NULL);
+    for(int i = 0; i < 4; i++){
+        pthread_join((id[i]), NULL);
+    }
 }

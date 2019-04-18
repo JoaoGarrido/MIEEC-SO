@@ -1,3 +1,7 @@
+/*
+This way there will be warnings because we are casting an integer to void * when returning from thread functions
+*/
+
 #include <pthread.h>
 #include <string.h>
 #include <stdio.h>
@@ -7,33 +11,30 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-typedef struct _input_struct
-{
+typedef struct _input_struct{
     int a, b;
 }input_struct;
 
-int resSum, resSub, resMult, resDiv;
-
 void *sum(void *arg){
     int *values = (int *) arg;
-    resSum = values[0]+values[1];
-    //resSum = *(int*)arg+*(int *)(arg+sizeof(int));
+    //return (void *) ( *(int*)arg+*(int *)(arg+sizeof(int)) );
+    return (void *) (values[0]+values[1]);
 }
 
 void *sub(void *arg){
     int *values = (int *) arg;
-    resSub = values[0]-values[1];
-    //resSub = *(int*)arg-*(int *)(arg+sizeof(int));
+    //return (void *) ( *(int*)arg-*(int *)(arg+sizeof(int)) );
+    return (void *) (values[0]-values[1]);
 }
 
 void *mult(void *arg){
     input_struct *values = (input_struct *)arg;
-    resMult = values->a*values->b;
+    return (void *) (values->a*values->b);
 }
 
 void *divi(void *arg){
     input_struct *values = (input_struct *)arg;
-    resDiv = values->a/values->b;
+    return (void *) (values->a/values->b);
 }
 
 int main(int argc, char *argv[]){
@@ -50,20 +51,18 @@ int main(int argc, char *argv[]){
     input.a = a;
     input.b = b;
     pthread_t id[4];
-    /*
-    pthread_attr_t attr[4];
-    for(int i = 0; i < 4; i++){
-        pthread_attr_init(&(attr[i]));
-    }*/
+    int res[4];
+
     pthread_create(&(id[0]), NULL, sum, (void *) args);
     pthread_create(&(id[1]), NULL, sub, (void *) args);
     pthread_create(&(id[2]), NULL, mult, (void *) &input);
     pthread_create(&(id[3]), NULL, divi, (void *) &input);
     for(int i = 0; i < 4; i++){
-        pthread_join((id[i]), NULL);
+        pthread_join((id[i]), (void **) &(res[i]));
     }
-    printf("Sum: %d\n", resSum);
-    printf("Sub: %d\n", resSub);
-    printf("Mult: %d\n", resMult);
-    printf("Div: %d\n", resDiv);
+    
+    printf("Sum: %d\n", (int) res[0] );
+    printf("Sub: %d\n", (int) res[1] );
+    printf("Mult: %d\n", (int) res[2] );
+    printf("Div: %d\n", (int) res[3] );
 }

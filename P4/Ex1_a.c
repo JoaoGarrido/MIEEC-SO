@@ -34,18 +34,17 @@ int main(int argc, char *argv[]){
     if(argc != 3) return -1;
     a = atoi(argv[1]);
     b = atoi(argv[2]);
-    pthread_attr_t attr[4];
     pthread_t id[4];
-    /*for(int i = 0; i < 4; i++){
+    /*
+    pthread_attr_t attr[4];
+    for(int i = 0; i < 4; i++){
         pthread_attr_init(&(attr[i]));
     }*/
     pthread_create(&(id[0]), NULL, sum, NULL);
     pthread_create(&(id[1]), NULL, sub, NULL);
     pthread_create(&(id[2]), NULL, mult, NULL);
     pthread_create(&(id[3]), NULL, divi, NULL);
-    
-    pthread_join((id[0]), NULL);
-    pthread_join((id[1]), NULL);
-    pthread_join((id[2]), NULL);
-    pthread_join((id[3]), NULL);
+    for(int i = 0; i < 4; i++){
+        pthread_join((id[i]), NULL);
+    }
 }
