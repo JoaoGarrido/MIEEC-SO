@@ -1,3 +1,8 @@
+/*
+Thanks weirdNox:
+https://github.com/weirdNox/FEUP/blob/master/Ano3/SO/set04/1d.c
+*/
+
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
