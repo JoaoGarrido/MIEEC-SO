@@ -1,9 +1,0 @@
----
-tags:
-  - Locks
-  - Concurrency
----
-
-#
-
-

@@ -14,8 +14,11 @@ because of this we need to use mutex to sync the threads
 #define I_MAX 3
 
 volatile uint64_t counter = 0;
+pthread_mutex_t lock;
+/*
+//Also possible:
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-
+*/
 
 void *incr(void *args){
     uint64_t *nInc = (uint64_t *)args;
@@ -35,12 +38,14 @@ int main(int argc, char *argv[]){
     assert(argc >= 2);
     uint64_t nIncrements_per_thread = 0;
     sscanf(argv[1], "%ld", &nIncrements_per_thread);
-    pthread_t id[3];
+    pthread_t *id = malloc( sizeof(pthread_t) * I_MAX );
 #ifdef with_Mutexes
     pthread_mutex_init(&lock,NULL);
 #endif   
-    for(int i=0; i < I_MAX; i++)    pthread_create(&(id[i]), NULL, incr, (void *)&nIncrements_per_thread);
-    for(int i=0; i < I_MAX; i++)    pthread_join(id[i],NULL);
+    for(int i=0; i < I_MAX; i++)    
+        pthread_create(&(id[i]), NULL, incr, (void *)&nIncrements_per_thread);
+    for(int i=0; i < I_MAX; i++)    
+        pthread_join(id[i],NULL);
 #ifdef with_Mutexes
     pthread_mutex_destroy(&lock);
 #endif       

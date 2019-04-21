@@ -40,7 +40,8 @@ int main(int argc, char const *argv[]){
         main_targ[i].n = nIncrements_per_thread;
         pthread_create(&(id[i]), NULL, SumFunc, (targ_t *)&main_targ[i]);
     }   
-    for(int i=0; i < I_MAX; i++)    pthread_join(id[i],NULL);
+    for(int i=0; i < I_MAX; i++)    
+        pthread_join(id[i],NULL);
     
     pthread_mutex_destroy(&lock);
     
