@@ -1,6 +1,9 @@
-#include "stack_functions.h"
+#include "stack_functions_safe.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <pthread.h>
+
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 void push(el_stack **HEAD, int integer, char *text){
     el_stack *newElement = (el_stack *) malloc(sizeof(el_stack));
@@ -8,19 +11,23 @@ void push(el_stack **HEAD, int integer, char *text){
         printf("Error allocating memory!\n");
         exit(1);
     }
+    pthread_mutex_lock(&lock);
     newElement->next = *HEAD;
+    *HEAD = newElement;
+    pthread_mutex_unlock(&lock);
     newElement->n = integer;
     newElement->str = text;
-    *HEAD = newElement;
 }
 
 void pop(el_stack **HEAD){
+    pthread_mutex_lock(&lock);
     if(*HEAD == NULL){
         printf("Stack empty or error!\n");
         return;
     }
     el_stack *tmp = *HEAD;
     *HEAD = tmp->next;
+    pthread_mutex_unlock(&lock);
     free(tmp);
 }
 

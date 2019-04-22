@@ -1,4 +1,4 @@
-#define STACK_FUNCTIONS_H "stack_functions.h"
+#define STACK_FUNCTIONS_SAFE_H "stack_functions_safe.h"
 
 typedef struct _el_stack{
 		char *str;              /* String to be printed in show() */
