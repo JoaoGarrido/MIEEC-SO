@@ -13,14 +13,21 @@ Exemplo de invocação:
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <assert.h>
 
 vector_t vector;	// estrutura de dados a partilhar pelos threads
 
 int main(int argc, char *argv[]) {
-setbuf(stdout, NULL);
+     setbuf(stdout, NULL);
 
-// a preencher com o seu código!
+     // a preencher com o seu código!
+     assert(argc > 2);
+	vector.len = (atoi(argv[1]) + atoi(argv[2]))*1000;
+     vector.cnt[0] = 0;
+     vector.cnt[1] = 0;
+     vector.next = 0;
+     vector.array = malloc( sizeof(int) * vector.len );
 
-print_vector(&vector);
-return 0;
+     print_vector(&vector);
+     return 0;
 }

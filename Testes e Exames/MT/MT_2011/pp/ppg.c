@@ -25,25 +25,83 @@ cujos valores são tais que o valor absoluto da diferença dos 2
 primeiros argumentos não excede o valor do 3º argumento.
 
 */
-
 #include "util.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <assert.h>
 
+#define N_THREADS 2
 vector_t vector;	// estrutura de dados a partilhar pelos threads
-chkr_arg_t ac;	// estrutura de dados a usar no argumento para o thread de verificação
+
 
 // a preencher com o seu código!
+typedef struct{
+     int ID;
+     int nElements;
+     pthread_t tID;
+     pthread_cond_t *cond;
+     int maxDifference;
+}threadArgs;
 
-int main(int argc, char *argv[]) {
-setbuf(stdout, NULL);
-
-// a preencher com o seu código!
-
-print_vector(&vector);
-return 0;
+void *arrayInit(void *args){
+    threadArgs *ThreadArg = (threadArgs *)args;
+    printf ("Thread %ld running\n", pthread_self());
+    printf ("Thread %d: cnt = %d, vp = %p\n", ThreadArg->ID, ThreadArg->nElements, &vector);
+    while(vector.cnt[ThreadArg->ID] < ThreadArg->nElements){
+        pthread_mutex_lock(&vector.lock);
+        while( vector.cnt[ThreadArg->ID]-vector.cnt[(ThreadArg->ID+1) % N_THREADS] >= (ThreadArg->maxDifference) ){
+            pthread_cond_wait(ThreadArg->cond, &vector.lock);
+        } 
+        vector.array[vector.next++] = ThreadArg->ID;
+        vector.cnt[ThreadArg->ID]++;
+        if( vector.cnt[(ThreadArg->ID+1) % N_THREADS]-vector.cnt[ThreadArg->ID] < (ThreadArg->maxDifference) ){
+            pthread_cond_signal(ThreadArg->cond);
+        }        
+        pthread_mutex_unlock(&vector.lock);
+    }
+    print_vector(&vector);
+    return NULL;    
 }
 
+int main(int argc, char *argv[]) {
+    setbuf(stdout, NULL);
+
+    // a preencher com o seu código!
+    assert(argc > 3);
+    vector.len = (atoi(argv[1]) + atoi(argv[2]))*1000;
+    vector.cnt[0] = 0;
+    vector.cnt[1] = 0;
+    vector.next = 0;
+    vector.array = malloc( sizeof(int) * vector.len );
+    pthread_mutex_init(&vector.lock, NULL);
+    pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+
+    pthread_t checkerID;
+    chkr_arg_t checkerArgs;
+    checkerArgs.argc = argc;
+    checkerArgs.argv = argv;
+    checkerArgs.vector = &vector;
+    pthread_create(&checkerID, NULL, checker, (void *)&checkerArgs);
+    threadArgs ThreadArgs[N_THREADS]; 
+    for(int i = 0; i < N_THREADS; i++){
+        ThreadArgs[i].ID = i;
+        ThreadArgs[i].nElements = atoi(argv[i+1])*1000;
+        ThreadArgs[i].maxDifference = atoi(argv[3])*1000;
+        ThreadArgs[i].cond = &cond;
+        pthread_create(&ThreadArgs[i].tID, NULL, arrayInit, (void *)&ThreadArgs[i]);
+    }
+    for(int i = 0; i < N_THREADS; i++)
+        pthread_join(ThreadArgs[i].tID, NULL);
+    printf ("Main thread exiting\n");
+
+    pthread_join(checkerID, NULL);
+
+    pthread_mutex_destroy(&vector.lock);
+    
+    print_vector(&vector);
+    free(vector.array);
+    return 0;
+}
 // a preencher com o seu código!

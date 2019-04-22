@@ -24,18 +24,36 @@ Exemplo de invocação:
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <assert.h>
 
+#define N_THREADS 2
 vector_t vector;	// estrutura de dados a partilhar pelos threads
 
 // a preencher com o seu código!
+void *arrayInit(void *args){
+	printf ("Thread %ld running\n", pthread_self());
+	return NULL;
+}
 
 int main(int argc, char *argv[]) {
-setbuf(stdout, NULL);
+	setbuf(stdout, NULL);
 
-// a preencher com o seu código!
+	// a preencher com o seu código!
+	assert(argc > 2);
+	vector.len = (atoi(argv[1]) + atoi(argv[2]))*1000;
+	vector.cnt[0] = 0;
+	vector.cnt[1] = 0;
+	vector.next = 0;
+	vector.array = malloc( sizeof(int) * vector.len );
+	pthread_t tID[2];
+	for(int i = 0; i < N_THREADS; i++)
+		pthread_create(&tID[i], NULL, arrayInit, NULL);
+	for(int i = 0; i < N_THREADS; i++)
+		pthread_join(tID[i], NULL);
+	printf ("Main thread exiting\n");
 
-print_vector(&vector);
-return 0;
+	print_vector(&vector);
+	return 0;
 }
 
 // a preencher com o seu código!
