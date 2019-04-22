@@ -42,7 +42,7 @@ void *baby(void *);	// baby thread
 
 int main(int argc, char *argv[]) {
 
-setbuf(stdout, NULL);
+	setbuf(stdout, NULL);
 	int B;	// number of babies
 	int F;	// number of bits of food of each refill
 	long R;	// number of refills - parent bird can then retire!
@@ -53,52 +53,57 @@ setbuf(stdout, NULL);
 	struct babyarg ba[MAXBABIES];	// conveys baby identification
 	pthread_t tchecker, tparent, tbaby[MAXBABIES];
 
-if( argc != 4) {
-	printf("Program invoked with wrong number of arguments.\n");
-	printf("Program usage: %s <n. babybirds> <n. food portions> <n. refills>\n", argv[0]);
-	exit(-1);
-    }
-else {
-	B = atoi(argv[1]);
-	F = atoi(argv[2]);
-	R = atoi(argv[3]);
+	if( argc != 4) {
+		printf("Program invoked with wrong number of arguments.\n");
+		printf("Program usage: %s <n. babybirds> <n. food portions> <n. refills>\n", argv[0]);
+		exit(-1);
+		}
+	else {
+		B = atoi(argv[1]);
+		F = atoi(argv[2]);
+		R = atoi(argv[3]);
+		}
+	printf("\nSimulation started\n");
+
+	// a preencher com o seu código:
+
+	// criar thread checker (também SEM passar argumentos!)
+	pthread_create(&tchecker, NULL, checker, NULL);
+	// criar thread parent bird
+	pthread_create(&tparent, NULL, checker, NULL);
+	// criar threads baby birds
+	for(int i = 0; i < B; i++){
+		pthread_create(&tbaby[i], NULL, checker, NULL);
 	}
-printf("\nSimulation started\n");
-
-// a preencher com o seu código:
-
-// criar thread checker (também SEM passar argumentos!)
-
-// criar thread parent bird
-
-// criar threads baby birds
 
 
-// esperar por thread parent
+	// esperar por thread parent
+	pthread_join(tparent, NULL);
+	// esperar por threads baby
+	for(int i = 0; i < B; i++){
+		pthread_join(tbaby[i], NULL);
+	}
+	// NÃO esperar pelo thread checker, pois é "detached"!
 
-// esperar por threads baby
+	printf("\nSimulation finished\n");
 
-// NÃO esperar pelo thread checker, pois é "detached"!
-
-printf("\nSimulation finished\n");
-
-exit (0);
+	exit (0);
 
 } // main()
 
 
 void *parent(void *arg) {	// parent bird thread
-printf ("\n\tParent starting");
+	printf ("\n\tParent starting");
 
-printf ("\n\tParent finishing");
-return NULL;
+	printf ("\n\tParent finishing");
+	return NULL;
 }
 
 
 void *baby(void *arg){	// baby thread
 
-printf ("\n   Baby bird beginning");
+	printf ("\n   Baby bird beginning");
 
-printf ("\n   Baby bird finishing");
-return (NULL);
+	printf ("\n   Baby bird finishing");
+	return (NULL);
 }
