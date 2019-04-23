@@ -1,4 +1,4 @@
-#include "match_line.c"
+//#include "match_line.c"
 #include <pthread.h>
 #include <assert.h>
 #include <sys/types.h>
@@ -23,6 +23,7 @@ void* search(void *args){
             printf("%s:\t%d\n", Args->fileName, aux);
         }
     }
+    close(Args->fileDescriptor);
     return 0;
 }
 

@@ -1,18 +1,19 @@
-#include "match_line.c"
+//#include "match_line.c"
 #include <pthread.h>
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-#define MAX_NUMBER_STRING 500
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
 
 typedef struct _threadWork{
     pthread_t threadID;
     const char *searchString;
     const char *fileName;
     int fileDescriptor;
-    int stringLine[MAX_NUMBER_STRING];
+    int *stringLine;
     int nOccurrences;
 }threadWork;
 
@@ -20,11 +21,17 @@ void* search(void *args){
     threadWork *Args = (threadWork *) args;
     Args->fileDescriptor = open(Args->fileName, O_RDONLY, S_IRUSR);
     assert(Args->fileDescriptor != -1);
-    int i = 0;
-    for(i = 0; (i == 0 || Args->stringLine[i-1] != 0) && i < MAX_NUMBER_STRING; i++){
-        Args->stringLine[i] = match_line(Args->fileDescriptor, (char *) Args->searchString);
+    int aux = 0, cap = 1;
+
+    Args->stringLine = malloc( sizeof(int));
+    while( (aux = match_line(Args->fileDescriptor, (char *) Args->searchString)) != 0 ){
+        if(Args->nOccurrences == cap){
+            cap = cap*2;
+            Args->stringLine = realloc(Args->stringLine, sizeof(int)* cap);
+        }
+        Args->stringLine[Args->nOccurrences++] = aux;
     }
-    Args->nOccurrences = i-1;
+    close(Args->fileDescriptor);
     return 0;
 }
 
@@ -40,11 +47,13 @@ int main(int argc, char const *argv[]){
     for(int i = 0; i < nFiles; i++){
         ThreadWork[i].searchString = argv[1];
         ThreadWork[i].fileName = argv[i+2];
+        ThreadWork[i].nOccurrences = 0;
         pthread_create(&ThreadWork[i].threadID, NULL, search, (void *) &ThreadWork[i]);
     } 
     for(int i = 0; i < nFiles; i++)
         pthread_join(ThreadWork[i].threadID, NULL);
     for(int i = 0; i < nFiles; i++)
         print_Thread_Work(&ThreadWork[i]);
+    free(ThreadWork);
     return 0;
 }

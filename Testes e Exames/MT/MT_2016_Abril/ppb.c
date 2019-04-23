@@ -1,4 +1,4 @@
-#include "match_line.c"
+//#include "match_line.c"
 #include <pthread.h>
 #include <assert.h>
 #include <sys/types.h>
@@ -17,12 +17,10 @@ void* search(void *args){
     Args->fileDescriptor = open(Args->fileName, O_RDONLY, S_IRUSR);
     assert(Args->fileDescriptor != -1);
     int aux = 1;
-    while( aux ){
-        aux = match_line(Args->fileDescriptor, (char *) Args->searchString);
-        if(aux){
-            printf("%s:\t%d\n", Args->fileName, aux);
-        }
+    while( (aux = match_line(Args->fileDescriptor, (char *) Args->searchString) ) != 0){
+        printf("%s:\t%d\n", Args->fileName, aux);
     }
+    close(Args->fileDescriptor);
     return 0;
 }
 
@@ -38,5 +36,6 @@ int main(int argc, char const *argv[]){
     } 
     for(int i = 0; i < nFiles; i++)
         pthread_join(ThreadWork[i].threadID, NULL);
+    free(ThreadWork);
     return 0;
 }
