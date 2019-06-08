@@ -1,7 +1,7 @@
 *.out
 *.ini
-*.pdf
-/OSTEP/
+/Livros/
 /Slides/
+/Slides_OLD/
 /.vscode/
 /Device Drivers/
