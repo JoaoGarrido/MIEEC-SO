@@ -23,8 +23,8 @@ If the OS passed control to the program (Direct Execution), how could we make su
 The OS must timeshare the processes to keep the system responsive and allow the illusion of multi processing.
 
 ## 6.2 Problem #1: Restricited Operations
-
-<img src="https://github.com/JoaoGarrido/MIEEC-SO/tree/master/SO_Notes/images/LDE_OSTEP.png" width="250" height="300" />
-
+<p>
+    <img src="./images/LDE_OSTEP.png" width="250" height="300"/>
+</p>
 
 # Scheduling
