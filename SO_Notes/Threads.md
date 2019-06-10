@@ -19,7 +19,7 @@ To get parallelization into our system we use threads.
 Threads are also used to perform slow I/O without blocking the main thread.
 
 ## 26.2 An Example: Thread Creation
-Even tho a thread is created first, the order that the threads are executed is handled by the scheduler.
+Although a thread is created first, the order that the threads are executed is handled by the scheduler.
 
 ## 26.3-5 Why It Gets Worse: Shared Data / The Heart of the Problem: Uncontrolled Scheduling / The Wish For Atomicity
 When we share data across threads, the scheduler can create race conditions () resulting in non deterministic behaviour and unexpected results.
@@ -38,25 +38,25 @@ int pthread_create(pthread_t *thread,
     void *arg);
 ```
 Description:
-> Creates a thread that runs the fuction start_routine with arguments arg.
-> 
+Creates a thread that runs the fuction start_routine with arguments arg.
+
 
 Params:
-> pthread_t *thread
->> Identifier to the thread. For example: pthread_t t1; pthread_create(&t1,....); 
-> 
-> const pthread_attr_t *attr
->> NULL makes the attributes default
->
-> void *(*start_routine) (void *) 
->> Executes start_routine() -> function: void * start_routine(void * arg);
->
-> void *arg
->> Sends the arguments to the function. These arguments are casted to void * and need to be casted to the desired type in the function.
+* pthread_t *thread
+Identifier to the thread. For example: pthread_t t1; pthread_create(&t1,....); 
+ 
+* const pthread_attr_t *attr
+NULL makes the attributes default
+
+* void *(*start_routine) (void *) 
+Executes start_routine() -> function: void * start_routine(void * arg);
+
+* void *arg
+Sends the arguments to the function. These arguments are casted to void * and need to be casted to the desired type in the function.
 
 Returns:
-> On sucess, 0
-> Otherwise returns error code(check man pthread_create )
+* On sucess, 0
+* Otherwise returns error code(check man pthread_create )
 
 Notes:
 
@@ -65,25 +65,24 @@ Notes:
 int pthread_join(pthread_t thread, void **retval);
 ```
 Description:
-> Waits for thread to terminate and stores in retval the return value. If already terminated returns immediately
+Waits for thread to terminate and stores in retval the return value. If already terminated returns immediately
 
 Params:
-> pthread_t thread
->> Identifier to the thread. For example: pthread_t t1; pthread_join(t1,....);
-> 
-> void **retval
->> NULL if we dont care about the value
->> Example:
->>
+* pthread_t thread
+Identifier to the thread. For example: pthread_t t1; pthread_join(t1,....);
+ 
+* void **retval
+NULL if we dont care about the value
+
+  * Example:
 ```c
 void *returnValue;
 pthread_join(t1, &returnValue);
 ```
 
 Returns:
-> On sucess, 0
->
-> Otherwise returns error code(check man pthread_create )
+* On sucess, 0
+* Otherwise returns error code(check man pthread_create )
 
 Notes:
 
