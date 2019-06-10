@@ -172,14 +172,106 @@ So we need a scheduler algorithm that has a decent turnaround time and response 
 
 ## **Multi-Level Feedback Queue**
 
+The MLFQ tries to optimize turnaround time while making the system responsive. To achieve this needs to learn as the system runs because generally the system knows nothing about the process.
+
 ## 8.1 MLFQ: Basic Rules
+
+The MLFQ has a number of distinct queues with different prioritie and 2 basic rules:
+1. If Priority(A) > Priority(B), A runs (B doesn’t).
+2. If Priority(A) = Priority(B), A & B run in RR.
+
+MLFQ varies the priority of a job based on its behavior:
+* If a process continuously waits for input, keeps high priority.
+* If a process uses the CPU intensively for long periods of time, it will reduce its priority.
+
+<p>
+    <img src="./images/MLFQ_Basic_OSTEP.png" width="180" height="180"/>
+</p>
 
 ## 8.2 Attempt #1: How To Change Priority
 
+Like RR, MLFQ uses time slices to swap between processes and changes the priority of a job based on that.
+
+Introducing the following rules:
+
+3. When a job enters the system, it is placed at the highest priority (the topmost queue).
+4. 
+    * a) If a job uses up an entire time slice while running, its priority is reduced (i.e., it moves down one queue).
+    * b) If a job gives up the CPU before the time slice is up, it stays at the same priority level.
+
+**Examples:** 
+
+Long job + short job:
+<p>
+    <img src="./images/MLFQ_Example1_OSTEP.png" width="180" height="180"/>
+</p>
+
+Interactive process:
+<p>
+    <img src="./images/MLFQ_Example2_OSTEP.png" width="180" height="180"/>
+</p>
+
+**Problems:**
+* **Starvation:** 
+
+If there are **too many interactive** jobs the system will alternate between them because they will wait for I/O and the long running jobs will never receive any CPU time (**starve**).
+
+<p>
+    <img src="./images/MLFQ_Starvation_OSTEP.png" width="180" height="180"/>
+</p>
+
+* **Game the scheduler (Gaming):** 
+
+A smart user could issue fast I/O before the time slice is over in order to remain at top priority getting more CPU share and monopolizing the CPU.
+<p>
+    <img src="./images/MLFQ_Gaming_OSTEP.png" width="180" height="180"/>
+</p>
+
+* **Change in behaviour:**
+
+A CPU-Bound program can transition into an interactive program. In our current implementation the process would be out luck once it's on the lowest priority.
+
 ## 8.3 Attempt #2: The Priority Boost
+
+To avoid starvation and account for a change in behaviour, we can periodically boost the priority of all jobs. 
+Introducing a new rule:
+
+5. After some time period S, move all the jobs in the system to the topmost queue.
+
+<p>
+    <img src="./images/MLFQ_Boost_OSTEP.png" width="180" height="180"/>
+</p>
 
 ## 8.4 Attempt #3: Better Accounting
 
+The problem with gambling occurs because the way we wrote rule 4. The OS should keep track of how much of a time slice the process used and reduce its priority once the time slice. This way the I/O time is irrelevant and only the ammount used by the process matters.
+
+4. Once a job uses up its time allotment at a given level (regardless of how many times it has given up the CPU), its priority is reduced (i.e., it moves down one queue).
+
+<p>
+    <img src="./images/MLFQ_AntiGamign_OSTEP.png" width="180" height="180"/>
+</p>
+
 ## 8.5 Tuning MLFQ and Other Issues
 
+Some notes:
+
+* The number of queues, time slice per queue, how often is the priority boosted are determined experimentally and are parameterized into the scheduler by constants(some OS allow easy configuration)
+
+* Variable time slice across different queues
+<p>
+    <img src="./images/MLFQ_Tuning_OSTEP.png" width="200" height="180"/>
+</p>
+
+* Other OS use mathematical formulas to determine the priority instead of a table
+
+* Some schedulers reserve the highest priority levels for OS work
+
 ## 8.6 MLFQ: Summary
+
+### **Rules:**
+1. If Priority(A) > Priority(B), A runs (B doesn’t).
+2. If Priority(A) = Priority(B), A & B run in round-robin fashion using the time slice (quantum length) of the given queue.
+3. When a job enters the system, it is placed at the highest priority (the topmost queue).
+4. Once a job uses up its time allotment at a given level (regardless of how many times it has given up the CPU), its priority is reduced (i.e., it moves down one queue).
+5. After some time period S, move all the jobs in the system to the topmost queue.
