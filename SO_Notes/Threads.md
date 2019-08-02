@@ -2,7 +2,6 @@
 tags:
   - OSTEP
   - Threads
-  - Concurrency
   - Chapter 26
   - Chapter 27
 ---
@@ -11,10 +10,12 @@ tags:
 
 Threads create separate points of execution in a program, just like processes, but they share the same address space and can acess the same data easily.
 
-Each thread has an independent stack (Stack Pointer, Program counter and static variables) and share the same heap in the same address space.
+Operations like creation/termination and switching are more efficient on threads than on processes.
+
+Each thread has an independent stack (Stack Pointer, base pointer) and register set (program counter and instruction pointer) only sharing the same heap and global variables.
 
 ## 26.1 Why use threads?
-To get parallelization into our system we use threads.
+To get parallelization of the same program into our system we use threads.
 
 Threads are also used to perform slow I/O without blocking the main thread.
 
@@ -56,9 +57,7 @@ Sends the arguments to the function. These arguments are casted to void * and ne
 
 Returns:
 * On sucess, 0
-* Otherwise returns error code(check man pthread_create )
-
-Notes:
+* Otherwise returns error code(check man pthread_create)
 
 ## 27.2 Thread Completion
 ```c

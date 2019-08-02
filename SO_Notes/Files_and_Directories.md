@@ -37,44 +37,40 @@ ssize_t read(int fd, void *buf, size_t count);
 ```
 
 Description:
-> Reads from file (referenced by the fd) count bytes into the buffer (buf). 
+
+Reads from file (referenced by the fd) count bytes into the buffer (buf). 
 
 Params:
-> int fd (file descriptor) 
-> 
-> void *buf -> buffer where the data will go
->
-> size_t count -> Max number of bytes that will be read 
+* int fd (file descriptor) 
+* void *buf -> buffer where the data will go
+* size_t count -> Max number of bytes that will be read 
 
 Returns:
-> Returns the number of bytes that were read
->> Zero indicates end of file
->>
->> -1 indicates error
+Returns the number of bytes that were read
+* Zero indicates end of file
+* -1 indicates error
 
 
 ### Writing: write() system call
 ```c
-* ssize_t write(int fd, const void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
 ```
 
 Description:
-> Writes up to count bytes from the buffer starting at buf to the file referred to by the file descriptor fd.
+
+Writes up to count bytes from the buffer starting at buf to the file referred to by the file descriptor fd.
 
 Params:
-> int fd (file descriptor) 
-> 
-> void *buf -> buffer where the data will come
->
-> size_t count -> Max number of bytes that will be written 
+* int fd (file descriptor) 
+* void *buf -> buffer where the data will come
+* size_t count -> Max number of bytes that will be written 
 
 Returns:
-> Returns the number of bytes that were written
->> Zero indicates end of space
->>
->> -1 indicates error
 
-Returns the number of bytes that were written.
+Returns the number of bytes that were written
+* Zero indicates end of space
+* -1 indicates error
+
 ## 39.5 Reading and Writing, But Not Sequentially
 ```c
 off_t lseek(int fd, off_t offset, int whence);
@@ -89,6 +85,7 @@ Jumps offset bytes from certain position. The initial position is determined by 
 * If whence is SEEK_END, the offset is set to the size ofthe file plus offset bytes.
 
 After executing lseek(), if we read() or write() from the file descriptor it will start at the position after lseek(). The OS keeps the information about the offset.
+
 ## 39.6 Shared File Table Entries: fork() and dup()
 
 fork() -> Parent and childs use the same Open File Table
